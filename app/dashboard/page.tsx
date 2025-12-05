@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { motion } from 'framer-motion';
+import { motion,Variants } from 'framer-motion';
 import { 
   User, 
   CreditCard, 
@@ -24,25 +24,29 @@ import {
 } from 'lucide-react';
 
 // --- ANIMATION VARIANTS (Premium Feel) ---
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08, // Lebih cepat sedikit biar snappy
-      delayChildren: 0.1
-    }
-  }
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { y: 30, opacity: 0, scale: 0.95 },
-  visible: { 
-    y: 0, 
-    opacity: 1, 
+  visible: {
+    y: 0,
+    opacity: 1,
     scale: 1,
-    transition: { type: "spring", stiffness: 120, damping: 12 } 
-  }
+    transition: {
+      type: "spring" as const,
+      stiffness: 120,
+      damping: 12,
+    },
+  },
 };
 
 // --- TIPE CARD MENU ---
