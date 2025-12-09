@@ -1,7 +1,14 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!baseURL) {
+  // optional: biar ketahuan kalau env belum ke-set waktu build
+  // console.warn('NEXT_PUBLIC_API_URL is not defined');
+}
+
 const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL, // JANGAN fallback ke localhost di production
+  baseURL, // ex: https://avanger-be.up.railway.app
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
@@ -27,7 +34,12 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    console.error('API Error:', error.response?.status, error.message);
+    console.error(
+      'API Error:',
+      error.response?.status,
+      error.message,
+      error.response?.config?.url,
+    );
 
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
