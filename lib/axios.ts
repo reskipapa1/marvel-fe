@@ -3,16 +3,19 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 if (!baseURL) {
-  // optional: biar ketahuan kalau env belum ke-set waktu build
-  // console.warn('NEXT_PUBLIC_API_URL is not defined');
+  // Bisa ganti jadi throw error kalau mau paksa env wajib ada
+  console.warn('NEXT_PUBLIC_API_URL is not defined');
 }
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL, // ex: https://avanger-be.up.railway.app
+  baseURL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
+  // Penting kalau pakai cookie / Sanctum
+  withCredentials: true,
+  withXSRFToken: true as any, // kalau TypeScript belum ada type-nya
 });
 
 // Request interceptor - Add Bearer token
