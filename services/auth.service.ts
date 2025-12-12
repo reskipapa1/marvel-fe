@@ -43,6 +43,7 @@ export const authService = {
         );
 
         localStorage.removeItem("auth_token");
+
         return response;
     },
 
