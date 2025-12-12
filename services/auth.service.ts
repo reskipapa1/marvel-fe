@@ -2,15 +2,10 @@ import apiClient from '@/lib/axios';
 import { User, LoginCredentials, RegisterData, LoginResponse, ApiResponse } from '@/types';
 import { AxiosResponse } from 'axios';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-if (!BASE_URL) {
-    console.error("❌ NEXT_PUBLIC_API_URL is not defined");
-}
-
 export const authService = {
+
     async register(data: RegisterData): Promise<AxiosResponse<LoginResponse>> {
-        const response = await apiClient.post(`${BASE_URL}/auth/register`, data);
+        const response = await apiClient.post('/register', data);
 
         if (response.data.accessToken) {
             localStorage.setItem("auth_token", response.data.accessToken);
@@ -20,7 +15,7 @@ export const authService = {
     },
 
     async login(credentials: LoginCredentials): Promise<AxiosResponse<LoginResponse>> {
-        const response = await apiClient.post(`${BASE_URL}/auth/login`, credentials);
+        const response = await apiClient.post('/login', credentials);
 
         if (response.data.accessToken) {
             localStorage.setItem("auth_token", response.data.accessToken);
@@ -30,34 +25,18 @@ export const authService = {
     },
 
     async logout(): Promise<AxiosResponse<ApiResponse<null>>> {
-        const token = localStorage.getItem("auth_token");
-
-        const response = await apiClient.post(
-            `${BASE_URL}/auth/logout`,
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-
+        const response = await apiClient.post('/logout');
         localStorage.removeItem("auth_token");
-
         return response;
     },
 
     async getUser(): Promise<AxiosResponse<User>> {
-        const token = localStorage.getItem("auth_token");
-
-        return apiClient.get(`${BASE_URL}/auth/me`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        return apiClient.get('/me');
     },
 
     getToken(): string | null {
-        return (typeof window !== 'undefined') ? localStorage.getItem('auth_token') : null;
+        return (typeof window !== 'undefined')
+            ? localStorage.getItem('auth_token')
+            : null;
     }
 };
