@@ -1,18 +1,13 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
-const rawBaseURL = process.env.NEXT_PUBLIC_API_URL;
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
-if (!rawBaseURL) {
+if (!baseURL) {
   console.warn('NEXT_PUBLIC_API_URL is not defined');
 }
 
-// PENTING: pastikan selalu ada /api
-const baseURL = rawBaseURL?.endsWith('/api')
-  ? rawBaseURL
-  : `${rawBaseURL}/api`;
-
 const apiClient: AxiosInstance = axios.create({
-  baseURL,
+  baseURL, // TIDAK ditambah /api lagi
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
@@ -21,7 +16,6 @@ const apiClient: AxiosInstance = axios.create({
   withXSRFToken: true as any,
 });
 
-// Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
@@ -36,7 +30,6 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response interceptor
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
