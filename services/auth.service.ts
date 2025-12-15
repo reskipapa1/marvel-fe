@@ -4,7 +4,6 @@ import { AxiosResponse } from 'axios';
 
 export const authService = {
   async register(data: RegisterData): Promise<AxiosResponse<LoginResponse>> {
-    await apiClient.get('/sanctum/csrf-cookie');
     const response = await apiClient.post('/api/register', data);
     if (response.data.token) {
       localStorage.setItem('auth_token', response.data.token);
@@ -13,7 +12,6 @@ export const authService = {
   },
 
   async login(credentials: LoginCredentials): Promise<AxiosResponse<LoginResponse>> {
-    await apiClient.get('/sanctum/csrf-cookie');
     const response = await apiClient.post('/api/login', credentials);
     if (response.data.token) {
       localStorage.setItem('auth_token', response.data.token);
