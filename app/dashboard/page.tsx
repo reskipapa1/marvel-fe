@@ -7,12 +7,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { motion,Variants } from 'framer-motion';
-import { 
-  User, 
-  CreditCard, 
-  Wallet, 
-  Settings, 
-  Building2, 
+import {
+  User,
+  CreditCard,
+  Wallet,
+  Settings,
+  Building2,
   FileText,
   ChevronRight,
   LayoutDashboard,
@@ -82,20 +82,20 @@ function DashboardContent() {
   if (!mounted) return null;
   // -------------------------------
 
-  const currentDate = new Date().toLocaleDateString('id-ID', { 
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+  const currentDate = new Date().toLocaleDateString('id-ID', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
 
   return (
     <div className="min-h-screen relative text-slate-200 font-sans overflow-x-hidden bg-[#0B0F19]">
-      
+
       {/* --- BACKGROUND PRO --- */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <Image 
-          src="/bg-dashboard.jpg" 
-          alt="Background" 
-          fill 
-          className="object-cover blur-2xl opacity-40 scale-110" 
+        <Image
+          src="/bg-dashboard.jpg"
+          alt="Background"
+          fill
+          className="object-cover blur-2xl opacity-40 scale-110"
           priority
         />
         {/* Noise Texture Overlay untuk kesan mahal */}
@@ -104,7 +104,7 @@ function DashboardContent() {
       </div>
 
       {/* --- NAVBAR (Tanpa Logout) --- */}
-      <motion.nav 
+      <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
@@ -128,14 +128,14 @@ function DashboardContent() {
               </p>
             </div>
           </div>
-          
-          
+
+
         </div>
       </motion.nav>
 
       {/* --- MAIN CONTENT --- */}
       <div className="relative z-10 container mx-auto px-6 pt-36 pb-20">
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -158,14 +158,14 @@ function DashboardContent() {
           </motion.div>
 
           {/* PROFILE & STATS GRID */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10"
           >
             {/* Main Profile Card */}
             <div className="lg:col-span-2 bg-[#151925]/60 backdrop-blur-xl border border-white/5 rounded-[2rem] p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/10 rounded-full blur-[80px] -mr-16 -mt-16 pointer-events-none"></div>
-                
+
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10">
                     <div className="w-24 h-24 rounded-full p-[2px] bg-gradient-to-br from-indigo-500 to-purple-600">
                         <div className="w-full h-full rounded-full bg-[#0B0F19] flex items-center justify-center overflow-hidden">
@@ -177,7 +177,7 @@ function DashboardContent() {
                         <p className="text-indigo-300 text-sm font-medium bg-indigo-500/10 inline-block px-3 py-1 rounded-full border border-indigo-500/20 mb-4 capitalize">
                             {user?.role} Account
                         </p>
-                        
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                             <div className="bg-white/5 p-3 rounded-xl border border-white/5">
                                 <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Email</p>
@@ -223,18 +223,18 @@ function DashboardContent() {
             <span className="w-1 h-6 bg-indigo-500 rounded-full"></span>
             Menu Utama
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {user?.role === 'customer' && (
               <>
-                <MenuCard 
+                <MenuCard
                   href="/peminjaman/create"
                   title="Ajukan Pinjaman"
                   subtitle="Butuh dana cepat? Proses instan sekarang."
                   icon={CreditCard}
                   gradient="from-indigo-600 to-blue-600"
                 />
-                <MenuCard 
+                <MenuCard
                   href="/peminjaman"
                   title="Pinjaman Saya"
                   subtitle="Pantau tagihan dan riwayat transaksi."
@@ -245,7 +245,7 @@ function DashboardContent() {
             )}
 
             {(user?.role === 'admin' || user?.role === 'owner') && (
-              <MenuCard 
+              <MenuCard
                 href="/admin/peminjaman"
                 title="Kelola Pinjaman"
                 subtitle="Dashboard monitoring & approval nasabah."
@@ -255,16 +255,25 @@ function DashboardContent() {
             )}
 
             {user?.role === 'owner' && (
-              <MenuCard 
-                href="/admin/banks"
-                title="Database Bank"
-                subtitle="Konfigurasi sistem perbankan pusat."
-                icon={Building2}
-                gradient="from-orange-600 to-red-600"
-              />
+              <>
+                <MenuCard
+                  href="/admin/users"
+                  title="Kelola Users"
+                  subtitle="Manajemen akun admin & kontrol akses sistem."
+                  icon={User}
+                  gradient="from-cyan-600 to-blue-600"
+                />
+                <MenuCard
+                  href="/admin/banks"
+                  title="Database Bank"
+                  subtitle="Konfigurasi sistem perbankan pusat."
+                  icon={Building2}
+                  gradient="from-orange-600 to-red-600"
+                />
+              </>
             )}
 
-            <MenuCard 
+            <MenuCard
               href="/profile"
               title="Pengaturan Akun"
               subtitle="Kelola keamanan & preferensi profil."
@@ -282,7 +291,7 @@ function DashboardContent() {
 function MenuCard({ href, title, subtitle, icon: Icon, gradient }: MenuCardProps) {
   return (
     <Link href={href}>
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         whileHover={{ y: -8, scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
@@ -301,7 +310,7 @@ function MenuCard({ href, title, subtitle, icon: Icon, gradient }: MenuCardProps
               <ChevronRight size={20} />
             </div>
           </div>
-          
+
           <div>
             <h3 className="text-xl font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">{title}</h3>
             <p className="text-sm text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">{subtitle}</p>
