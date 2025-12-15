@@ -16,13 +16,22 @@ import {
     Trash2,
     User as UserIcon,
     Shield,
-    Crown
+    Crown,
+    X,
+    Save
 } from 'lucide-react';
 
 function AdminUsersContent() {
     const { user } = useAuth();
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
+    const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [editForm, setEditForm] = useState({
+        name: '',
+        username: '',
+        email: '',
+        role: 'customer' as 'admin' | 'owner' | 'customer'
+    });
 
     useEffect(() => {
         fetchUsers();
@@ -37,6 +46,33 @@ function AdminUsersContent() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleEdit = (userItem: User) => {
+        setEditingUser(userItem);
+        setEditForm({
+            name: userItem.name,
+            username: userItem.username,
+            email: userItem.email,
+            role: userItem.role
+        });
+    };
+
+    const handleSaveEdit = async () => {
+        if (!editingUser) return;
+
+        try {
+            await userService.update(editingUser.id, editForm);
+            alert('User berhasil diupdate!');
+            setEditingUser(null);
+            fetchUsers();
+        } catch (error) {
+            alert('Gagal mengupdate user');
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setEditingUser(null);
     };
 
     const handleDelete = async (id: number, name: string) => {
@@ -106,6 +142,92 @@ function AdminUsersContent() {
                     </div>
                 </motion.div>
 
+                {/* Edit Modal */}
+                {editingUser && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="bg-[#151925] border border-white/10 rounded-[2rem] p-8 max-w-md w-full"
+                        >
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-xl font-bold text-white">Edit User</h3>
+                                <button
+                                    onClick={handleCancelEdit}
+                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-400 mb-2">Nama</label>
+                                    <input
+                                        type="text"
+                                        value={editForm.name}
+                                        onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-400 mb-2">Username</label>
+                                    <input
+                                        type="text"
+                                        value={editForm.username}
+                                        onChange={(e) => setEditForm({...editForm, username: e.target.value})}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-400 mb-2">Email</label>
+                                    <input
+                                        type="email"
+                                        value={editForm.email}
+                                        onChange={(e) => setEditForm({...editForm, email: e.target.value})}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-400 mb-2">Role</label>
+                                    <select
+                                        value={editForm.role}
+                                        onChange={(e) => setEditForm({...editForm, role: e.target.value as 'admin' | 'owner' | 'customer'})}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                                    >
+                                        <option value="customer">Customer</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="owner">Owner</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 mt-8">
+                                <button
+                                    onClick={handleCancelEdit}
+                                    className="flex-1 px-4 py-3 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg transition-colors"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    onClick={handleSaveEdit}
+                                    className="flex-1 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <Save size={16} />
+                                    Simpan
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+
                 {/* Content */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -163,6 +285,7 @@ function AdminUsersContent() {
                                                     {userItem.role === 'admin' ? (
                                                         <div className="flex items-center justify-end gap-2">
                                                             <button
+                                                                onClick={() => handleEdit(userItem)}
                                                                 className="flex items-center gap-1 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 px-3 py-1.5 rounded-lg text-sm font-medium transition-all group"
                                                                 title="Edit"
                                                             >
