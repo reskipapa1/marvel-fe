@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import { peminjamanService } from '@/services/peminjaman.service';
 import { Peminjaman } from '@/types';
 import Link from 'next/link';
@@ -20,6 +21,7 @@ import {
 
 function AdminPeminjamanContent() {
     // --- LOGIC START (TIDAK DIUBAH) ---
+    const { user } = useAuth(); 
     const [loans, setLoans] = useState<Peminjaman[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -173,29 +175,34 @@ function AdminPeminjamanContent() {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-5 whitespace-nowrap text-right">
-                                                    {loan.status === 'pending' ? (
-                                                        <div className="flex items-center justify-end gap-2">
-                                                            <button
-                                                                onClick={() => handleApprove(loan.id)}
-                                                                className="flex items-center gap-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-sm font-medium transition-all group"
-                                                                title="Setujui"
-                                                            >
-                                                                <CheckCircle size={16} className="group-hover:scale-110 transition-transform" />
-                                                                <span className="hidden md:inline">Setujui</span>
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleReject(loan.id)}
-                                                                className="flex items-center gap-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-1.5 rounded-lg text-sm font-medium transition-all group"
-                                                                title="Tolak"
-                                                            >
-                                                                <XCircle size={16} className="group-hover:scale-110 transition-transform" />
-                                                                <span className="hidden md:inline">Tolak</span>
-                                                            </button>
-                                                        </div>
-                                                    ) : (
-                                                        <span className="text-sm text-slate-500 italic">Tidak ada aksi</span>
-                                                    )}
-                                                </td>
+                                            {user?.role === 'admin' ? (           // ← hanya admin yang lihat tombol
+                                            loan.status === 'pending' ? (
+                                                <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleApprove(loan.id)}
+                                                    className="flex items-center gap-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-sm font-medium transition-all group"
+                                                    title="Setujui"
+                                                >
+                                                    <CheckCircle size={16} className="group-hover:scale-110 transition-transform" />
+                                                    <span className="hidden md:inline">Setujui</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleReject(loan.id)}
+                                                    className="flex items-center gap-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-1.5 rounded-lg text-sm font-medium transition-all group"
+                                                    title="Tolak"
+                                                >
+                                                    <XCircle size={16} className="group-hover:scale-110 transition-transform" />
+                                                    <span className="hidden md:inline">Tolak</span>
+                                                </button>
+                                                </div>
+                                            ) : (
+                                                <span className="text-sm text-slate-500 italic">Tidak ada aksi</span>
+                                            )
+                                            ) : (
+                                            // owner & role lain: cuma teks, tidak ada tombol
+                                            <span className="text-sm text-slate-500 italic">Tidak ada aksi</span>
+                                            )}
+                                        </td>
                                             </tr>
                                         ))}
                                         {loans.length === 0 && (
