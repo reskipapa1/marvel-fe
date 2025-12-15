@@ -64,15 +64,15 @@ export default function LoginPage() {
                 >
                     <Quote className="text-indigo-400 mb-4 opacity-50" size={32} />
                     <p className="text-lg text-slate-200 font-light leading-relaxed mb-6">
-                        "Hidup anda tenang?, pinjol solusinya. Dengan Hutang hidup akan semakin menantang, salam garuk dengkul."
+                        "Don’t look back with regret, look forward with hope."
                     </p>
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-400 to-purple-500 flex items-center justify-center font-bold text-sm">
                             IR
                         </div>
                         <div>
-                            <p className="font-bold">Irfan Nurfathoni Putra</p>
-                            <p className="text-xs text-slate-400">CEO, Tech Startups</p>
+                            <p className="font-bold">Irfan, Eki dan Nia</p>
+                            <p className="text-xs text-slate-400">Team 4</p>
                         </div>
                     </div>
                 </motion.div>

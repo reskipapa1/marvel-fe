@@ -129,13 +129,7 @@ function DashboardContent() {
             </div>
           </div>
           
-          {/* Notification Icon Only */}
-          <div className="flex items-center gap-4">
-            <button className="p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition relative group">
-              <Bell size={20} className="text-slate-300 group-hover:text-white transition-colors" />
-              <span className="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-            </button>
-          </div>
+          
         </div>
       </motion.nav>
 
