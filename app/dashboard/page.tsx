@@ -20,7 +20,8 @@ import {
   LucideIcon,
   Calendar,
   ShieldCheck,
-  Smartphone
+  Smartphone,
+  Activity
 } from 'lucide-react';
 
 // --- ANIMATION VARIANTS (Premium Feel) ---
@@ -262,6 +263,13 @@ function DashboardContent() {
                   subtitle="Manajemen akun admin & kontrol akses sistem."
                   icon={User}
                   gradient="from-cyan-600 to-blue-600"
+                />
+                <MenuCard
+                  href="/admin/users"
+                  title="Audit Logs"
+                  subtitle="Riwayat aktivitas & perubahan sistem."
+                  icon={Activity}
+                  gradient="from-purple-600 to-indigo-600"
                 />
                 <MenuCard
                   href="/admin/banks"
