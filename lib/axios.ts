@@ -7,13 +7,14 @@ if (!baseURL) {
 }
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL, // TIDAK ditambah /api lagi
+  baseURL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
   withCredentials: true,
-  withXSRFToken: true as any,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
 });
 
 apiClient.interceptors.request.use(
