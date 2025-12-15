@@ -18,7 +18,9 @@ import {
     Shield,
     Crown,
     X,
-    Save
+    Save,
+    Eye,
+    EyeOff
 } from 'lucide-react';
 
 function AdminUsersContent() {
@@ -26,10 +28,12 @@ function AdminUsersContent() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
     const [editForm, setEditForm] = useState({
         name: '',
         username: '',
         email: '',
+        password: '',
         role: 'customer' as 'admin' | 'owner' | 'customer'
     });
 
@@ -54,15 +58,21 @@ function AdminUsersContent() {
             name: userItem.name,
             username: userItem.username,
             email: userItem.email,
+            password: '', // Kosongkan password untuk keamanan
             role: userItem.role
         });
+        setShowPassword(false);
     };
 
     const handleSaveEdit = async () => {
         if (!editingUser) return;
 
+        // Buat payload tanpa password jika kosong
+        const { password, ...payload } = editForm;
+        const finalPayload = password.trim() ? { ...payload, password } : payload;
+
         try {
-            await userService.update(editingUser.id, editForm);
+            await userService.update(editingUser.id, finalPayload);
             alert('User berhasil diupdate!');
             setEditingUser(null);
             fetchUsers();
@@ -73,6 +83,7 @@ function AdminUsersContent() {
 
     const handleCancelEdit = () => {
         setEditingUser(null);
+        setShowPassword(false);
     };
 
     const handleDelete = async (id: number, name: string) => {
@@ -152,7 +163,7 @@ function AdminUsersContent() {
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="bg-[#151925] border border-white/10 rounded-[2rem] p-8 max-w-md w-full"
+                            className="bg-[#151925] border border-white/10 rounded-[2rem] p-8 max-w-md w-full max-h-[90vh] overflow-y-auto"
                         >
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-xl font-bold text-white">Edit User</h3>
@@ -172,6 +183,7 @@ function AdminUsersContent() {
                                         value={editForm.name}
                                         onChange={(e) => setEditForm({...editForm, name: e.target.value})}
                                         className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                                        placeholder="Masukkan nama lengkap"
                                     />
                                 </div>
 
@@ -182,6 +194,7 @@ function AdminUsersContent() {
                                         value={editForm.username}
                                         onChange={(e) => setEditForm({...editForm, username: e.target.value})}
                                         className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                                        placeholder="Masukkan username"
                                     />
                                 </div>
 
@@ -192,7 +205,30 @@ function AdminUsersContent() {
                                         value={editForm.email}
                                         onChange={(e) => setEditForm({...editForm, email: e.target.value})}
                                         className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                                        placeholder="Masukkan email"
                                     />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-400 mb-2">
+                                        Password Baru <span className="text-xs text-slate-500">(kosongkan jika tidak ingin mengubah)</span>
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            value={editForm.password}
+                                            onChange={(e) => setEditForm({...editForm, password: e.target.value})}
+                                            className="w-full px-4 py-3 pr-12 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                                            placeholder="Masukkan password baru (min 8 karakter)"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded transition-colors"
+                                        >
+                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div>
